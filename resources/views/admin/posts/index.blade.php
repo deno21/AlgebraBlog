@@ -51,6 +51,7 @@
 				{{ 'No Posts!!' }}
 				@endif
             </div>
+			{!! $posts->render() !!}
         </div>
     </div>
 @stop

@@ -13,7 +13,7 @@ class Post extends Model
      *
      * @var array
      */
-    protected $fillable = ['use_id','title','slug','content'];
+    protected $fillable = ['user_id','title','slug','content'];
 	
 	/**
 	* The Eloquent users model name
