@@ -7,6 +7,7 @@ Use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Sentinel;
+use Cartalyst\Sentinel\Users\IlluminateUserRepository;
 
 class PostController extends Controller
 {
@@ -28,10 +29,10 @@ class PostController extends Controller
     public function index()
     {
      if(Sentinel::inRole('administrator')){
-		 $posts = Post::orderBy('created_at', 'DESC')->paginate(1);	 
-	 }else{
+		 $posts = Post::orderBy('created_at','DESC')->paginate(1);	 
+	 } else {
 		 $user_id = Sentinel::getUser()->id;
-		 $posts = Post::where('user_id',$user_id)->orderBy('created_at', 'DESC')->paginate(1);	
+		 $posts = Post::where('user_id', $user_id)->orderBy('created_at', 'DESC')->paginate(1);	
 	 }
 	
 	 return view('admin.posts.index',['posts'=>$posts]);
@@ -93,19 +94,56 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
-    }
+    $post = Post::find($id);
+ +      $user_id = Sentinel::getUser()->id;
+ +      
+ +      if($user_id == $post->user_id) {
+ +        return view('admin.posts.edit', ['post' => $post]);       
+ +    } else {
+ +      return redirect()->route('admin.posts.index');
+ +      }
+ +  }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\PostRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PostRequest $request, $id)
     {
-        //
+               
+ +      $result = $this->validate($request, [
+ +            'title' => 'required',
+ +            'content' => 'required'
+ +        ]);
+ +      
+ +     
+ +        $attributes = [
+ +            'title' => $request->get('title', null),
+ +            'content' => $request->get('content', null),
+ +        ];        
+ +        
+ +         
+ +        $post = Post::find($id);
+ +        if (!$post) {
+ +            if ($request->ajax()) {
+ +                return response()->json("Invalid post.", 422);
+ +            }
+ +            session()->flash('error', 'Invalid post.');
+ +            return redirect()->back()->withInput();
+ +        }
+ +      
+ +       
+ +          $post->updatePost($attributes);
+ +       
+ +        if ($request->ajax()) {
+ +            return response()->json(['post' => $post], 200);
+ +        }
+ +
+ +        session()->flash('success', "Post '{$post->title}' has been updated.");
+ +        return redirect()->route('admin.posts.index'); 
     }
 
     /**
@@ -114,15 +152,13 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    
     public function destroy($id)
     {
         $post = Post::find($id);
-		$post->delete();
-		
-		$post = new Post();
-		$post->savePost($data);
-		
-		$message = session()->flash('success', 'You have successfully deleted a post');
+		      $post->delete();
+			
+		$message = session()->flash('success', 'You have successfully delete post');
 		
 		return redirect()->route('admin.posts.index')->withFlashMessage($message);
     }
