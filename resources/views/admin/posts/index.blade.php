@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="table-responsive">
-			@if(count($posts) > 0)
+            @if(count($posts) > 0)
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -27,14 +27,14 @@
                     <tbody>
                         @foreach ($posts as $post)
                             <tr>
-                              <td>
-									<a href="{{ route('admin.posts.show', $post->id) }}">
-										{{ $post->title }}
-									</a>
-								</td>
+                                <td>
+                                    <a href="{{ route('admin.posts.show', $post->id) }}">
+                                        {{ $post->title }}
+                                    </a>
+                                </td>
                                 <td>{{ $post->user->email }}</td>
                                 <td>
-                                    <a href="{{ route('admin.posts.edit', $post->id) }}" class="btn btn-default">
+                                    <a href="{{ route('admin.posts.edit', $post->id) }}" class="btn btn-default {{ (Sentinel::getUser()->id != $post->user_id) ? 'disabled' : '' }}">
                                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                         Edit
                                     </a>
@@ -47,11 +47,11 @@
                         @endforeach
                     </tbody>
                 </table>
-				@else 
-				{{ 'No Posts!!' }}
-				@endif
+                @else
+                {{ 'No posts!' }}
+            @endif
             </div>
-			{!! $posts->render() !!}
+            {!! $posts->render() !!}
         </div>
     </div>
 @stop

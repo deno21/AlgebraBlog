@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -10,9 +9,9 @@
 | to using a Closure or controller method. Build something great!
 |
 */
-
 // Index page
 Route::get('/', ['as' => 'index', 'uses' => 'IndexController@index']);
+
 // Home page
 Route::get('home', ['as' => 'home', 'uses' => 'User\HomeController@index']);
 
@@ -37,7 +36,6 @@ Route::get('password/reset', ['as' => 'auth.password.request.form', 'uses' => 'A
 Route::post('password/reset', ['as' => 'auth.password.request.attempt', 'uses' => 'Auth\PasswordController@postRequest']);
 
 
-
 /*############# ADMIN ##############*/
 Route::group(['prefix' => 'admin'], function () {
   // Dashboard
@@ -47,14 +45,19 @@ Route::group(['prefix' => 'admin'], function () {
   // Roles
   Route::resource('roles', 'Admin\RoleController');
   // Posts
-  Route::resource('posts', 'Admin\PostController', 
+  Route::resource('posts', 'Admin\PostController',
   ['names' => [
-		'index'   => 'admin.posts.index',
-		'create'  => 'admin.posts.create',
-		'store'   => 'admin.posts.store',
-		'show'    => 'admin.posts.show',
-		'edit'    => 'admin.posts.edit',
-		'update'  => 'admin.posts.update',
-		'destroy' => 'admin.posts.destroy'
+  'index' =>  'admin.posts.index',
+  'create' => 'admin.posts.create',
+  'store' =>  'admin.posts.store',
+  'show' =>   'admin.posts.show',
+  'edit' =>   'admin.posts.edit',
+  'update' => 'admin.posts.update',
+  'destroy' => 'admin.posts.destroy'  
   ]]);
 });
+
+
+// Post page
+Route::post('/store/', ['as' => 'post.store', 'uses' => 'IndexController@store']);
+Route::get('/{slug}', ['as' => 'post.show', 'uses' => 'IndexController@show']);
