@@ -11,7 +11,7 @@ class Comment extends Model
      *
      * @var array
      */
-    protected $fillable = ['use_id','post_id','content'];
+    protected $fillable = ['user_id','post_id','content'];
 	
 	/**
 	* The Eloquent users model name
